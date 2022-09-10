@@ -1,0 +1,6 @@
+#ifndef COLACP_H_INCLUDED
+#define COLACP_H_INCLUDED
+
+
+
+#endif // COLACP_H_INCLUDED
