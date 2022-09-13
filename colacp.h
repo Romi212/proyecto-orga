@@ -1,10 +1,10 @@
 #ifndef COLACP_H_INCLUDED
 #define COLACP_H_INCLUDED
-#define FALSE = 0
-#define TRUE = 1
-#define CCP_NO_INI = 2
-#define POS_NULA = NULL
-#define ELE_NULO = NULL
+#define FALSE 0
+#define TRUE 1
+#define CCP_NO_INI 2
+#define POS_NULA NULL
+#define ELE_NULO NULL
 
 typedef void * TClave;
 typedef void * TValor;
@@ -23,6 +23,7 @@ typedef struct nodo {
 
 
 typedef struct cola_con_prioridad {
+    int (*comparador)(TEntrada, TEntrada);
     unsigned int cantidad_elementos;
     TNodo raiz;
 } * TColaCP;
