@@ -5,6 +5,7 @@
 #define CCP_NO_INI 2
 #define POS_NULA NULL
 #define ELE_NULO NULL
+#define MEMO_ERR 3
 
 typedef void * TClave;
 typedef void * TValor;
