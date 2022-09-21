@@ -25,7 +25,7 @@ typedef struct nodo {
 
 typedef struct cola_con_prioridad {
     int (*comparador)(TEntrada, TEntrada);
-    unsigned int cantidad_elementos;
+    int cantidad_elementos;
     TNodo raiz;
 } * TColaCP;
 

@@ -2,10 +2,70 @@
 #include <stdlib.h>
 #include "colacp.h"
 
+
+
+int comp_de_enteros(TEntrada e1, TEntrada e2){
+
+    int c1 = *((int*) e1->clave);
+    int c2 = *((int*) e2->clave);
+
+    if(c1 < c2) return -1;
+    if(c1 > c2) return 1;
+    else return 0;
+
+}
+
+void liberar(TEntrada e){
+    free(e);
+}
+
 int main(int nro, char** argc)
 {
-    printf("%s %d \n",argc[1],nro);
-    printf("Hello Romi!\n");
+    printf("Creamos una entrada 3 'neko' \n");
+    TEntrada entrada3 = (TEntrada) malloc(sizeof(struct entrada));
+    int clave1 = 3;
+    entrada3 -> clave = &clave1;
+    char pal1[5] = "neko";
+    entrada3 -> valor = &pal1;
+
+    printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrada3 -> valor );
+
+    printf("Creamos una entrada 1 'hola' \n");
+    TEntrada entrada1 = (TEntrada) malloc(sizeof(struct entrada));
+    int clave2 = 1;
+    entrada1 -> clave = &clave2;
+    char pal2[5] = "hola";
+    entrada1 -> valor = &pal2;
+
+    printf("Entrada clave: %d valor: %s \n",*((int*)entrada1 -> clave),(char*)entrada1 -> valor );
+printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrada3 -> valor );
+
+    printf("Creamos una entrada 2 'soy' \n");
+    TEntrada entrada2 = (TEntrada) malloc(sizeof(struct entrada));
+    int clave3 = 2;
+    entrada2 -> clave = &clave3;
+    char pal3[5] = "soy";
+    entrada2 -> valor = &pal3;
+
+    printf("Entrada clave: %d valor: %s \n",*((int*)entrada2 -> clave),(char*)entrada2 -> valor );
+
+
+    printf("Comparamos entrada 3 con 2 y nos da %d \n",comp_de_enteros(entrada3,entrada2));
+
+    printf("Creamos la cola\n");
+
+    TColaCP cola = crear_cola_cp(comp_de_enteros);
+
+    printf("la cola tiene %d elementos", cola->cantidad_elementos);
+
+    printf("LE agregamos la entrada 3");
+
+    int se_pudo = cp_insertar( cola, entrada3);
+
+    if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
+
+
+    cp_destruir(cola, liberar);
 
     return 0;
 }
