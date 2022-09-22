@@ -24,8 +24,10 @@ int main(int nro, char** argc)
 {
     printf("Creamos una entrada 3 'neko' \n");
     TEntrada entrada3 = (TEntrada) malloc(sizeof(struct entrada));
-    int clave1 = 3;
-    entrada3 -> clave = &clave1;
+    int* clave1 = (int*) malloc(sizeof(int));
+    *clave1 = 3;
+
+    entrada3 -> clave = clave1;
     char pal1[5] = "neko";
     entrada3 -> valor = &pal1;
 
@@ -73,9 +75,9 @@ printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrad
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
     cp_destruir(cola, liberar);
 
-  //  TEntrada e1 = cp_eliminar(cola);
+    TEntrada e1 = cp_eliminar(cola);
 
-   // printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)e1 -> clave),(char*)e1 -> valor,cola->cantidad_elementos);
+    printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)e1 -> clave),(char*)e1 -> valor,cola->cantidad_elementos);
 
     return 0;
 }

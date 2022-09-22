@@ -76,6 +76,7 @@ static TNodo crear_nuevo_nodo(TNodo padre, int esIzq){
 }
 
 int cp_insertar(TColaCP cola, TEntrada entr){
+    printf("Entrada clave: %d valor: %s \n",*((int*)entr -> clave),(char*)entr-> valor );
  //Si se recibe un puntero a nulo no se puede realizar la operacion
     if(cola == POS_NULA) exit(CCP_NO_INI);
     int opExitosa = 1;
@@ -84,6 +85,11 @@ int cp_insertar(TColaCP cola, TEntrada entr){
         TNodo nuevo_nodo = inicializar_nodo();
         if(nuevo_nodo == POS_NULA) opExitosa = 0;
         cola->raiz = nuevo_nodo;
+
+        nuevo_nodo->entrada = entr;
+    printf("Entrada clave: %d valor: %s \n",*((int*)nuevo_nodo->entrada -> clave),(char*)nuevo_nodo
+               ->entrada -> valor );
+
     }
     else{
         //Se busca la pos donde debe insertarse el nodo
@@ -93,6 +99,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
         int quedan = (cola->cantidad_elementos)- (fila_completa - 1 );
         int pos = quedan+1;
         //Se busca el padre del nodo
+
         TNodo padre  = get_padre(cola,fila_completa, pos);
         //Se crea el nodo en su lugar
         TNodo nuevoNodo = crear_nuevo_nodo(padre, quedan %2);
@@ -103,6 +110,8 @@ int cp_insertar(TColaCP cola, TEntrada entr){
             nuevoNodo->entrada = entr;
             //Se acomoda para respetar el orden
             bubble(nuevoNodo, cola);
+             printf("Entrada clave: %d valor: %s \n",*((int*)nuevoNodo->entrada -> clave),(char*)nuevoNodo->entrada -> valor );
+
 
         }
     }
@@ -113,13 +122,15 @@ int cp_insertar(TColaCP cola, TEntrada entr){
 //Devuelve el uli
 static TNodo get_ultimo_nodo(TColaCP cola){
     //Se busca donde esta el ultimo nodo
-    int altura = get_altura(cola->cantidad_elementos);
+    int altura = get_altura((cola->cantidad_elementos));
+    printf("\n %d",altura);
     int fila_completa = pow(2,altura); //Cantidad que debería tener la ultima fila para ser un arbol completo
     //Se calcula la cantidad de nodos de la ultima fila
     int quedan = (cola->cantidad_elementos)- (fila_completa - 1 );
     int pos = quedan;
     //Se busca el padre del nodo
     TNodo padre = get_padre(cola,cola->cantidad_elementos,pos);
+    //printf("\n %d",padre==(cola->raiz));
     TNodo nodo;
     if (pos % 2) nodo = padre->hijo_izquierdo;
     else nodo = padre->hijo_derecho;
@@ -156,9 +167,12 @@ TEntrada cp_eliminar(TColaCP cola){
 
     //Sacar la raiz y guardar la entrada
     TEntrada entrada_min = (cola->raiz)->entrada;
+    printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)entrada_min -> clave),(char*)entrada_min -> valor,cola->cantidad_elementos);
 
     // Poner la ultima entrada en la raiz
     TNodo ultimo_nodo = get_ultimo_nodo(cola);
+   //TEntrada ultimoN = ultimo_nodo->entrada;
+   // printf("a ver ultimo nodo (%d , %s )",*((int*)ultimoN -> clave),(char*)ultimoN -> valor);
     cola->raiz->entrada = ultimo_nodo->entrada;
     free(ultimo_nodo);
     cola->cantidad_elementos--;
