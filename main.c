@@ -68,16 +68,31 @@ printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrad
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
 
     se_pudo = cp_insertar( cola, entrada1);
+    TEntrada entradahijoI = cola->raiz->hijo_izquierdo->entrada;
+    //TEntrada entradahijoD = cola->raiz->hijo_derecho->entrada;
+    printf("ENTRADA HIJO I (%d , %s ) ",*((int*)entradahijoI -> clave),(char*)entradahijoI -> valor);
+   // printf("ENTRADA HIJO D (%d , %s ) ",*((int*)entradahijoD -> clave),(char*)entradahijoD -> valor);
 
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
     se_pudo = cp_insertar( cola, entrada2);
 
+
+
+
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
-    cp_destruir(cola, liberar);
 
-    TEntrada e1 = cp_eliminar(cola);
+/*    TEntrada entradahijoI = cola->raiz->hijo_izquierdo->entrada;
+    TEntrada entradahijoD = cola->raiz->hijo_derecho->entrada;
+    printf("ENTRADA HIJO I (%d , %s ) ",*((int*)entradahijoI -> clave),(char*)entradahijoI -> valor);
+    printf("ENTRADA HIJO D (%d , %s ) ",*((int*)entradahijoD -> clave),(char*)entradahijoD -> valor);
+   */
+   // TEntrada e1 = cp_eliminar(cola);
 
-    printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)e1 -> clave),(char*)e1 -> valor,cola->cantidad_elementos);
+    //printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)e1 -> clave),(char*)e1 -> valor,cola->cantidad_elementos);
+
+   cp_destruir(cola, liberar);
+
+
 
     return 0;
 }
