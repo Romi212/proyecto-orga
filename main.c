@@ -16,6 +16,7 @@ int comp_de_enteros(TEntrada e1, TEntrada e2){
 }
 
 void liberar(TEntrada e){
+   // printf("Entrada clave: %d valor: %s \n",*((int*)e -> clave),(char*)e-> valor );
     free(e);
 }
 
@@ -64,8 +65,17 @@ printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrad
 
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
 
+    se_pudo = cp_insertar( cola, entrada1);
 
+    if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
+    se_pudo = cp_insertar( cola, entrada2);
+
+    if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
     cp_destruir(cola, liberar);
+
+  //  TEntrada e1 = cp_eliminar(cola);
+
+   // printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)e1 -> clave),(char*)e1 -> valor,cola->cantidad_elementos);
 
     return 0;
 }

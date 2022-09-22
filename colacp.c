@@ -178,6 +178,7 @@ int cp_cantidad(TColaCP cola){
 
 //Método auxiliar para eliminar todos los nodos descendientes del nodo recivido
 static void eliminarRec(TNodo n,void (*fEliminar)(TEntrada)){
+   // printf("eliminarRec con %d ",*((int*)(n->entrada)->clave));
     if((n->hijo_izquierdo)!= POS_NULA) eliminarRec(n->hijo_derecho,fEliminar);
     if((n->hijo_derecho)!= POS_NULA) eliminarRec(n->hijo_derecho,fEliminar);
    fEliminar(n->entrada);
@@ -190,7 +191,8 @@ void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)){
     if(cola == POS_NULA) exit(CCP_NO_INI);
 
     //Si la cola tiene elementos se elimina cada uno de forma recursiva
-    if(cola->raiz != ELE_NULO){
+    if(cola->raiz != POS_NULA){
+            //printf("Hay raiz \n");
         TNodo nodo = cola-> raiz;
         eliminarRec(nodo,fEliminar);
     }
