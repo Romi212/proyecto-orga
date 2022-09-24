@@ -8,7 +8,7 @@ TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)){
     if( cola == POS_NULA) exit(MEMO_ERR);
     cola->comparador=f;
     cola->cantidad_elementos=0;
-    cola->raiz = ELE_NULO;
+    cola->raiz = POS_NULA;
     return cola;
 }
 //Dado la cantidad de elementos de un arbol devuelve la altura que tendria con un elemento mas
@@ -41,9 +41,11 @@ static void bubble(TNodo nodo, TColaCP cola){
 //Crea un nuevo nodo e inicializa sus atributos
 static TNodo inicializar_nodo(){
         TNodo nuevo_nodo = (TNodo) malloc(sizeof(struct nodo));
-        nuevo_nodo->padre = POS_NULA;
-        nuevo_nodo->hijo_derecho = POS_NULA;
-        nuevo_nodo->hijo_izquierdo = POS_NULA;
+        if(nuevo_nodo != POS_NULA){
+            nuevo_nodo->padre = POS_NULA;
+            nuevo_nodo->hijo_derecho = POS_NULA;
+            nuevo_nodo->hijo_izquierdo = POS_NULA;
+        }
         return nuevo_nodo;
 }
 
@@ -66,11 +68,11 @@ static TNodo get_padre(TColaCP cola, int cant_comp, int pos){
 }
 
 //Dado un padre se crea un nodo como su hijo derecho o izquierdo segun sea especificado
-static TNodo crear_nuevo_nodo(TNodo padre, int esIzq){
+static TNodo crear_nuevo_nodo(TNodo padre, int esDer){
 
     TNodo nodo = inicializar_nodo();
-    if(esIzq) padre->hijo_izquierdo = nodo;
-    else padre->hijo_derecho = nodo;
+    if(esDer) padre->hijo_derecho = nodo;
+    else padre->hijo_izquierdo = nodo;
     nodo->padre = padre;
     return nodo;
 }
@@ -129,8 +131,8 @@ static TNodo get_ultimo_nodo(TColaCP cola){
     int quedan = (cola->cantidad_elementos)- (fila_completa - 1 );
     int pos = quedan;
     //Se busca el padre del nodo
-    TNodo padre = get_padre(cola,cola->cantidad_elementos,pos);
-    printf("El padre es (%d , %s )",*((int*)padre->entrada -> clave),(char*)padre->entrada-> valor);
+    TNodo padre = get_padre(cola,fila_completa,pos);
+   // printf("El padre es (%d , %s )",*((int*)padre->entrada -> clave),(char*)padre->entrada-> valor);
 
     TNodo nodo;
     if (pos % 2) {
@@ -138,7 +140,9 @@ static TNodo get_ultimo_nodo(TColaCP cola){
             padre->hijo_izquierdo = POS_NULA;
     }
     else {
+
             nodo = padre->hijo_derecho;
+
             padre-> hijo_derecho = POS_NULA;
     }
     return nodo;
@@ -146,12 +150,15 @@ static TNodo get_ultimo_nodo(TColaCP cola){
 
 static void bubble_reverse(TColaCP cola, TNodo padre){
     if(padre->hijo_izquierdo != POS_NULA){
+
         int compareIzq = cola->comparador(padre->hijo_izquierdo->entrada,padre->entrada);
         int compareDer = 1;
         if(padre->hijo_derecho != POS_NULA){
+
             compareDer = cola->comparador(padre->hijo_derecho->entrada,padre->entrada);
         }
         if(compareIzq <0 || compareDer <0){
+
                 TNodo cambiar;
             if(cola->comparador(padre->hijo_derecho->entrada,padre->hijo_izquierdo->entrada)<0)
                 cambiar = padre->hijo_derecho;
@@ -173,7 +180,7 @@ TEntrada cp_eliminar(TColaCP cola){
 
     //Sacar la raiz y guardar la entrada
     TEntrada entrada_min = (cola->raiz)->entrada;
-    printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)entrada_min -> clave),(char*)entrada_min -> valor,cola->cantidad_elementos);
+    //printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)entrada_min -> clave),(char*)entrada_min -> valor,cola->cantidad_elementos);
 
     // Poner la ultima entrada en la raiz
     TNodo ultimo_nodo = get_ultimo_nodo(cola);
@@ -186,7 +193,9 @@ TEntrada cp_eliminar(TColaCP cola){
 
 
     //BUbble hacia abajo
+
     bubble_reverse(cola, cola->raiz);
+
 
     return entrada_min;
 }
@@ -200,7 +209,7 @@ int cp_cantidad(TColaCP cola){
 //Método auxiliar para eliminar todos los nodos descendientes del nodo recivido
 static void eliminarRec(TNodo n,void (*fEliminar)(TEntrada)){
    // printf("eliminarRec con %d ",*((int*)(n->entrada)->clave));
-    if((n->hijo_izquierdo)!= POS_NULA) eliminarRec(n->hijo_derecho,fEliminar);
+    if((n->hijo_izquierdo)!= POS_NULA) eliminarRec(n->hijo_izquierdo,fEliminar);
     if((n->hijo_derecho)!= POS_NULA) eliminarRec(n->hijo_derecho,fEliminar);
    fEliminar(n->entrada);
    free(n);

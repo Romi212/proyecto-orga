@@ -2,7 +2,15 @@
 #include <stdlib.h>
 #include "colacp.h"
 
+void imprimirCola(TNodo n){
 
+    if(n->hijo_izquierdo != POS_NULA) imprimirCola(n->hijo_izquierdo);
+    else printf("[NULO-");
+    printf("(%d,%s)",*((int*)n->entrada->clave),(char*)n->entrada->valor);
+    if(n->hijo_derecho != POS_NULA) imprimirCola(n->hijo_derecho);
+    else printf("-NULO]");
+
+}
 
 int comp_de_enteros(TEntrada e1, TEntrada e2){
 
@@ -41,7 +49,7 @@ int main(int nro, char** argc)
     entrada1 -> valor = &pal2;
 
     printf("Entrada clave: %d valor: %s \n",*((int*)entrada1 -> clave),(char*)entrada1 -> valor );
-printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrada3 -> valor );
+//printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrada3 -> valor );
 
     printf("Creamos una entrada 2 'soy' \n");
     TEntrada entrada2 = (TEntrada) malloc(sizeof(struct entrada));
@@ -59,7 +67,7 @@ printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrad
 
     TColaCP cola = crear_cola_cp(comp_de_enteros);
 
-    printf("la cola tiene %d elementos", cola->cantidad_elementos);
+    printf("la cola tiene %d elementos \n", cola->cantidad_elementos);
 
     printf("LE agregamos la entrada 3");
 
@@ -67,13 +75,26 @@ printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrad
 
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
 
+    printf("\n La cola: ");
+    imprimirCola(cola->raiz);
+    printf("\n");
+
     se_pudo = cp_insertar( cola, entrada1);
-    TEntrada entradahijoI = cola->raiz->hijo_izquierdo->entrada;
-    //TEntrada entradahijoD = cola->raiz->hijo_derecho->entrada;
-    printf("ENTRADA HIJO I (%d , %s ) ",*((int*)entradahijoI -> clave),(char*)entradahijoI -> valor);
-   // printf("ENTRADA HIJO D (%d , %s ) ",*((int*)entradahijoD -> clave),(char*)entradahijoD -> valor);
+
+
+//    TEntrada entradahijoI = cola->raiz->hijo_izquierdo->entrada;
+//    //TEntrada entradahijoD = cola->raiz->hijo_derecho->entrada;
+//    printf("ENTRADA HIJO I (%d , %s ) ",*((int*)entradahijoI -> clave),(char*)entradahijoI -> valor);
+//   // printf("ENTRADA HIJO D (%d , %s ) ",*((int*)entradahijoD -> clave),(char*)entradahijoD -> valor);
 
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
+
+
+
+    printf("\n La cola: ");
+    imprimirCola(cola->raiz);
+    printf("\n");
+
     se_pudo = cp_insertar( cola, entrada2);
 
 
@@ -81,15 +102,21 @@ printf("Entrada clave: %d valor: %s \n",*((int*)entrada3 -> clave),(char*)entrad
 
     if(se_pudo) printf("Se pudo insertar entrada, ahora %d elementos", cola->cantidad_elementos);
 
+    printf("\n La cola: ");
+    imprimirCola(cola->raiz);
+    printf("\n");
+
 /*    TEntrada entradahijoI = cola->raiz->hijo_izquierdo->entrada;
     TEntrada entradahijoD = cola->raiz->hijo_derecho->entrada;
     printf("ENTRADA HIJO I (%d , %s ) ",*((int*)entradahijoI -> clave),(char*)entradahijoI -> valor);
     printf("ENTRADA HIJO D (%d , %s ) ",*((int*)entradahijoD -> clave),(char*)entradahijoD -> valor);
    */
-   // TEntrada e1 = cp_eliminar(cola);
+    TEntrada e1 = cp_eliminar(cola);
 
-    //printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)e1 -> clave),(char*)e1 -> valor,cola->cantidad_elementos);
-
+    printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)e1 -> clave),(char*)e1 -> valor,cola->cantidad_elementos);
+printf("\n La cola: ");
+    imprimirCola(cola->raiz);
+    printf("\n");
    cp_destruir(cola, liberar);
 
 
