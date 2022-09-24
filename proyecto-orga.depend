@@ -29,9 +29,12 @@
 
 1663768616 c:\users\neko\romi\uni 22-2\orga\codigo\proyecto\proyecto-orga\colacp.h
 
-1663016017 source:c:\users\neko\romi\uni 22-2\orga\codigo\proyecto\proyecto-orga\planificador.c
+1664053543 source:c:\users\neko\romi\uni 22-2\orga\codigo\proyecto\proyecto-orga\planificador.c
+	<stdio.h>
+	<stdlib.h>
+	"colacp.h"
 
-1664048547 source:c:\users\neko\romi\uni 22-2\orga\codigo\proyecto\proyecto-orga\colacp.c
+1664052512 source:c:\users\neko\romi\uni 22-2\orga\codigo\proyecto\proyecto-orga\colacp.c
 	<stdio.h>
 	<stdlib.h>
 	"colacp.h"

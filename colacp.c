@@ -3,14 +3,6 @@
 #include "colacp.h"
 #include <math.h>
 
-TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)){
-    TColaCP cola = (TColaCP) malloc(sizeof(struct cola_con_prioridad));
-    if( cola == POS_NULA) exit(MEMO_ERR);
-    cola->comparador=f;
-    cola->cantidad_elementos=0;
-    cola->raiz = POS_NULA;
-    return cola;
-}
 //Dado la cantidad de elementos de un arbol devuelve la altura que tendria con un elemento mas
 static int get_altura(int cant){
     int h = 0;
@@ -49,7 +41,7 @@ static TNodo inicializar_nodo(){
         return nuevo_nodo;
 }
 
-//Dado la cantidad de nodos de la ultima fila del arbol si estubiera completo y la posicion dentro de esta
+//Dado la cantidad de nodos de la ultima fila del arbol como si estuviera completo y la posicion dentro de esta
 //devuelve el padre a esa posicion
 static TNodo get_padre(TColaCP cola, int cant_comp, int pos){
     TNodo nodo_act = cola->raiz;
@@ -75,6 +67,79 @@ static TNodo crear_nuevo_nodo(TNodo padre, int esDer){
     else padre->hijo_izquierdo = nodo;
     nodo->padre = padre;
     return nodo;
+}
+
+//Devuelve el uli
+static TNodo get_ultimo_nodo(TColaCP cola){
+    //Se busca donde esta el ultimo nodo
+    int altura = get_altura((cola->cantidad_elementos)-1);
+   // printf("\n %d",altura);
+    int fila_completa = pow(2,altura); //Cantidad que debería tener la ultima fila para ser un arbol completo
+    //Se calcula la cantidad de nodos de la ultima fila
+    int quedan = (cola->cantidad_elementos)- (fila_completa - 1 );
+    int pos = quedan;
+    //Se busca el padre del nodo
+    TNodo padre = get_padre(cola,fila_completa,pos);
+   // printf("El padre es (%d , %s )",*((int*)padre->entrada -> clave),(char*)padre->entrada-> valor);
+
+    TNodo nodo;
+    if (pos % 2) {
+            nodo = padre->hijo_izquierdo;
+            padre->hijo_izquierdo = POS_NULA;
+    }
+    else {
+
+            nodo = padre->hijo_derecho;
+
+            padre-> hijo_derecho = POS_NULA;
+    }
+    return nodo;
+}
+
+////Dado una cola y la raiz se encarga de ordenarlo para respetar el orden
+static void bubble_reverse(TColaCP cola, TNodo padre){
+    if(padre->hijo_izquierdo != POS_NULA){
+
+        int compareIzq = cola->comparador(padre->hijo_izquierdo->entrada,padre->entrada);
+        int compareDer = 1;
+        if(padre->hijo_derecho != POS_NULA){
+
+            compareDer = cola->comparador(padre->hijo_derecho->entrada,padre->entrada);
+        }
+        if(compareIzq <0 || compareDer <0){
+
+                TNodo cambiar;
+            if(cola->comparador(padre->hijo_derecho->entrada,padre->hijo_izquierdo->entrada)<0)
+                cambiar = padre->hijo_derecho;
+            else cambiar = padre->hijo_izquierdo;
+            TEntrada aux = cambiar->entrada;
+            cambiar->entrada = padre->entrada;
+            padre->entrada = aux;
+            bubble_reverse(cola,cambiar);
+        }
+
+    }
+}
+
+//Método auxiliar para eliminar todos los nodos descendientes del nodo recivido
+static void eliminarRec(TNodo n,void (*fEliminar)(TEntrada)){
+   // printf("eliminarRec con %d ",*((int*)(n->entrada)->clave));
+    if((n->hijo_izquierdo)!= POS_NULA) eliminarRec(n->hijo_izquierdo,fEliminar);
+    if((n->hijo_derecho)!= POS_NULA) eliminarRec(n->hijo_derecho,fEliminar);
+   fEliminar(n->entrada);
+   free(n);
+}
+
+
+//-----TDA COLA CON PRIORIDAD-----
+
+TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)){
+    TColaCP cola = (TColaCP) malloc(sizeof(struct cola_con_prioridad));
+    if( cola == POS_NULA) exit(MEMO_ERR);
+    cola->comparador=f;
+    cola->cantidad_elementos=0;
+    cola->raiz = POS_NULA;
+    return cola;
 }
 
 int cp_insertar(TColaCP cola, TEntrada entr){
@@ -121,57 +186,6 @@ int cp_insertar(TColaCP cola, TEntrada entr){
     return opExitosa;
     }
 
-//Devuelve el uli
-static TNodo get_ultimo_nodo(TColaCP cola){
-    //Se busca donde esta el ultimo nodo
-    int altura = get_altura((cola->cantidad_elementos)-1);
-   // printf("\n %d",altura);
-    int fila_completa = pow(2,altura); //Cantidad que debería tener la ultima fila para ser un arbol completo
-    //Se calcula la cantidad de nodos de la ultima fila
-    int quedan = (cola->cantidad_elementos)- (fila_completa - 1 );
-    int pos = quedan;
-    //Se busca el padre del nodo
-    TNodo padre = get_padre(cola,fila_completa,pos);
-   // printf("El padre es (%d , %s )",*((int*)padre->entrada -> clave),(char*)padre->entrada-> valor);
-
-    TNodo nodo;
-    if (pos % 2) {
-            nodo = padre->hijo_izquierdo;
-            padre->hijo_izquierdo = POS_NULA;
-    }
-    else {
-
-            nodo = padre->hijo_derecho;
-
-            padre-> hijo_derecho = POS_NULA;
-    }
-    return nodo;
-}
-
-static void bubble_reverse(TColaCP cola, TNodo padre){
-    if(padre->hijo_izquierdo != POS_NULA){
-
-        int compareIzq = cola->comparador(padre->hijo_izquierdo->entrada,padre->entrada);
-        int compareDer = 1;
-        if(padre->hijo_derecho != POS_NULA){
-
-            compareDer = cola->comparador(padre->hijo_derecho->entrada,padre->entrada);
-        }
-        if(compareIzq <0 || compareDer <0){
-
-                TNodo cambiar;
-            if(cola->comparador(padre->hijo_derecho->entrada,padre->hijo_izquierdo->entrada)<0)
-                cambiar = padre->hijo_derecho;
-            else cambiar = padre->hijo_izquierdo;
-            TEntrada aux = cambiar->entrada;
-            cambiar->entrada = padre->entrada;
-            padre->entrada = aux;
-            bubble_reverse(cola,cambiar);
-        }
-
-    }
-}
-
 TEntrada cp_eliminar(TColaCP cola){
  //Si se recibe un puntero a nulo no se puede realizar la operacion
     if(cola == POS_NULA) exit(CCP_NO_INI);
@@ -205,16 +219,6 @@ int cp_cantidad(TColaCP cola){
     if(cola == POS_NULA) exit(CCP_NO_INI);
     return cola->cantidad_elementos;
 }
-
-//Método auxiliar para eliminar todos los nodos descendientes del nodo recivido
-static void eliminarRec(TNodo n,void (*fEliminar)(TEntrada)){
-   // printf("eliminarRec con %d ",*((int*)(n->entrada)->clave));
-    if((n->hijo_izquierdo)!= POS_NULA) eliminarRec(n->hijo_izquierdo,fEliminar);
-    if((n->hijo_derecho)!= POS_NULA) eliminarRec(n->hijo_derecho,fEliminar);
-   fEliminar(n->entrada);
-   free(n);
-}
-
 
 void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)){
     //Si se recibe un puntero a nulo no se puede realizar la operacion
