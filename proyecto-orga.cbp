@@ -35,9 +35,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="colacp.h" />
-		<Unit filename="main.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="planificador.c">
 			<Option compilerVar="CC" />
 		</Unit>

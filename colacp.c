@@ -143,7 +143,7 @@ TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)){
 }
 
 int cp_insertar(TColaCP cola, TEntrada entr){
-    printf("Entrada clave: %d valor: %s \n",*((int*)entr -> clave),(char*)entr-> valor );
+    printf("Entra AL PRINCIPIO '\n" );
  //Si se recibe un puntero a nulo no se puede realizar la operacion
     if(cola == POS_NULA) exit(CCP_NO_INI);
     int opExitosa = 1;
@@ -154,8 +154,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
         cola->raiz = nuevo_nodo;
 
         nuevo_nodo->entrada = entr;
-    printf("Entrada clave: %d valor: %s \n",*((int*)nuevo_nodo->entrada -> clave),(char*)nuevo_nodo
-               ->entrada -> valor );
+    printf("Entra AL MEDIO \n" );
 
     }
     else{
@@ -177,7 +176,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
             nuevoNodo->entrada = entr;
             //Se acomoda para respetar el orden
             bubble(nuevoNodo, cola);
-             printf("Entrada clave: %d valor: %s \n",*((int*)nuevoNodo->entrada -> clave),(char*)nuevoNodo->entrada -> valor );
+             printf("Entra AL FINAL \n" );
 
 
         }
@@ -194,6 +193,10 @@ TEntrada cp_eliminar(TColaCP cola){
 
     //Sacar la raiz y guardar la entrada
     TEntrada entrada_min = (cola->raiz)->entrada;
+
+    if(cola->cantidad_elementos>1){
+
+
     //printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)entrada_min -> clave),(char*)entrada_min -> valor,cola->cantidad_elementos);
 
     // Poner la ultima entrada en la raiz
@@ -211,6 +214,15 @@ TEntrada cp_eliminar(TColaCP cola){
     bubble_reverse(cola, cola->raiz);
 
 
+    }
+    else{
+
+        cola->cantidad_elementos = 0;
+        free(cola->raiz);
+        cola ->raiz = POS_NULA;
+
+
+    }
     return entrada_min;
 }
 
