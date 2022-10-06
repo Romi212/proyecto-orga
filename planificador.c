@@ -158,7 +158,7 @@ int main(int cantA, char** args){
         default: {printf("\n Opcion invalida \n");break;}
       }
     //}
-    for(int i = 0; i<cant+1; i++){
+    for(int i = 1; i<cant+1; i++){
         TCiudad c = ciudades[i];
         free(c->nombre);
         free(c);
