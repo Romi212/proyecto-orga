@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "colacp.h"
+#include <string.h>
 
 typedef struct ciudad {
 char * nombre;
@@ -87,7 +88,9 @@ int main(int cantA, char** args){
     FILE * archivo = fopen("viajes.txt","r");
     //TCiudad[100] ciudades;
     char linea[100];
+    char palabra[50];
     fgets(linea, 100,archivo);
+
     TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
     if(origen != POS_NULA) {
         char or[10]= "origen";
@@ -97,6 +100,8 @@ int main(int cantA, char** args){
     }
     printf("Leemos origen en %d %d", linea[0],linea[2]);
     ciudades[0] = origen;
+
+
     int i = 0;
     while (fgets(linea, 100,archivo)){
             printf("Leemos c1 en %d %d", linea[0],linea[2]);
@@ -105,7 +110,7 @@ int main(int cantA, char** args){
     if(c1 != POS_NULA) {
          char letra = linea[0];
          int j = 0;
-          char palabra[50] ="pru" ;
+          //palabra="pru";
         while(letra != ';'){
             palabra[j] = letra;
             printf("%c",letra);
@@ -115,8 +120,10 @@ int main(int cantA, char** args){
         palabra[j] = '\0';
         printf("\n");
 
-
-        c1->nombre = palabra;
+        char * name = (char*)malloc(sizeof(palabra));
+        c1->nombre = name;
+        strcpy(c1->nombre,palabra);
+       //  c1->nombre = prueba;
          printf("%s",palabra);
         c1->pos_x = linea[j+1]- '0';
         c1-> pos_y = linea[j+3] -'0';
@@ -153,8 +160,8 @@ int main(int cantA, char** args){
     //}
     for(int i = 0; i<cant+1; i++){
         TCiudad c = ciudades[i];
+        free(c->nombre);
         free(c);
-
 
     }
     return 0;

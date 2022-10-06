@@ -3,7 +3,11 @@
 	<stdio.h>
 	<stdlib.h>
 
-1662837361 source:c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\colacp.c
+1665087350 source:c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\colacp.c
+	<stdio.h>
+	<stdlib.h>
+	"colacp.h"
+	<math.h>
 
 1662837382 source:c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\planificador.c
 
@@ -39,4 +43,6 @@
 	<stdlib.h>
 	"colacp.h"
 	<math.h>
+
+1663954006 c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\colacp.h
 
