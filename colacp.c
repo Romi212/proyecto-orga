@@ -109,7 +109,7 @@ static void bubble_reverse(TColaCP cola, TNodo padre){
         if(compareIzq <0 || compareDer <0){
 
                 TNodo cambiar;
-            if(cola->comparador(padre->hijo_derecho->entrada,padre->hijo_izquierdo->entrada)<0)
+            if((padre->hijo_derecho != POS_NULA) && cola->comparador(padre->hijo_derecho->entrada,padre->hijo_izquierdo->entrada)<0)
                 cambiar = padre->hijo_derecho;
             else cambiar = padre->hijo_izquierdo;
             TEntrada aux = cambiar->entrada;
