@@ -9,8 +9,9 @@ float pos_x;
 float pos_y;
 } * TCiudad;
 
+//Funcion free para las entradas
 void eliminarEntrada(TEntrada e){
-
+    free(e->valor);
     free(e->clave);
     free(e);
 }
@@ -28,7 +29,7 @@ void imprimirCiudad(TCiudad c){
     printf(" en pos(%f, %f) \n",c->pos_x,c->pos_y);
 }
 
-// ENTRADA = clave un int, y de valor una ciudad
+//Funcion comparador para ordenar ascendentemente
 int ordenarAsc(TEntrada e1, TEntrada e2){
     float c1 = *((float*)e1->clave);
     float c2 = *((float*)e2->clave);
@@ -37,6 +38,8 @@ int ordenarAsc(TEntrada e1, TEntrada e2){
     else return 1;
 
 }
+
+//Funcion comparador para ordenar descendentemente
 int ordenarDes(TEntrada e1, TEntrada e2){
     float c1 = *((float*)e1->clave);
     float c2 = *((float*)e2->clave);
@@ -45,11 +48,16 @@ int ordenarDes(TEntrada e1, TEntrada e2){
     else return -1;
 
 }
+
+//Funcion que computa la distancia entre ciudades
 float distanciaManhattan(TCiudad c1, TCiudad c2){
     float resultado=0;
     resultado = abs((c1->pos_x)-(c2->pos_x)) + abs((c1->pos_y)-(c2->pos_y));
     return resultado;
 }
+
+
+//Procedimiento para mostrar ascendente o descendentemente el listado de ciudades segun el comparador que le pasen
 void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntrada)){
     TColaCP cola = crear_cola_cp(orden);
 
@@ -72,11 +80,17 @@ void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntr
     }
     cp_destruir(cola, eliminarEntrada);
 }
-void mostrarDescendente(){
-    printf("WIUWIUWIUW");
-}
-void reducirHorasManejo(){
-    printf("AGUANTE C DIJO NUNCA NADIE");
+
+
+//Procedimiento que muestra el listado de ciudades segun la reduccion de horas de manejo
+void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEntrada)){
+    float distancia = 0;
+    TColaCP cola = crear_cola_cp(orden);
+
+
+
+
+    cp_destruir(cola, eliminarEntrada);
 }
 
 
@@ -153,14 +167,14 @@ int main(int cantA, char** args){
       switch(opcion){
         case 1: {mostrarOrdenado(ciudades, cant, ordenarAsc); break;}
         case 2: {mostrarOrdenado(ciudades, cant, ordenarDes);break;}
-        case 3: {reducirHorasManejo();break;}
+        case 3: {reducirHorasManejo(ciudades, cant, ordenarAsc);break;}
         case 4: {printf("\n Se cierra el programa");break;}
         default: {printf("\n Opcion invalida \n");break;}
       }
     //}
-    for(int i = 1; i<cant+1; i++){
+    for(int i = 0; i<cant+1; i++){
         TCiudad c = ciudades[i];
-        free(c->nombre);
+        if(i!=0)free(c->nombre);
         free(c);
 
     }

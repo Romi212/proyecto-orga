@@ -69,7 +69,7 @@ static TNodo crear_nuevo_nodo(TNodo padre, int esDer){
     return nodo;
 }
 
-//Devuelve el uli
+//Devuelve el ultimo nodo del heap
 static TNodo get_ultimo_nodo(TColaCP cola){
     //Se busca donde esta el ultimo nodo
     int altura = get_altura((cola->cantidad_elementos)-1);
@@ -96,7 +96,7 @@ static TNodo get_ultimo_nodo(TColaCP cola){
     return nodo;
 }
 
-////Dado una cola y la raiz se encarga de ordenarlo para respetar el orden
+//Dado una cola y la raiz se encarga de ordenarlo para respetar el orden
 static void bubble_reverse(TColaCP cola, TNodo padre){
     if(padre->hijo_izquierdo != POS_NULA){
 
@@ -121,7 +121,7 @@ static void bubble_reverse(TColaCP cola, TNodo padre){
     }
 }
 
-//Método auxiliar para eliminar todos los nodos descendientes del nodo recivido
+//Método auxiliar para eliminar todos los nodos descendientes del nodo recibido
 static void eliminarRec(TNodo n,void (*fEliminar)(TEntrada)){
    // printf("eliminarRec con %d ",*((int*)(n->entrada)->clave));
     if((n->hijo_izquierdo)!= POS_NULA) eliminarRec(n->hijo_izquierdo,fEliminar);
@@ -143,7 +143,7 @@ TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)){
 }
 
 int cp_insertar(TColaCP cola, TEntrada entr){
-    printf("Entra AL PRINCIPIO '\n" );
+   // printf("Entra AL PRINCIPIO '\n" );
  //Si se recibe un puntero a nulo no se puede realizar la operacion
     if(cola == POS_NULA) exit(CCP_NO_INI);
     int opExitosa = 1;
@@ -154,7 +154,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
         cola->raiz = nuevo_nodo;
 
         nuevo_nodo->entrada = entr;
-    printf("Entra AL MEDIO \n" );
+    //printf("Entra AL MEDIO \n" );
 
     }
     else{
@@ -176,7 +176,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
             nuevoNodo->entrada = entr;
             //Se acomoda para respetar el orden
             bubble(nuevoNodo, cola);
-             printf("Entra AL FINAL \n" );
+             //printf("Entra AL FINAL \n" );
 
 
         }

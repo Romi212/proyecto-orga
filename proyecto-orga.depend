@@ -3,13 +3,17 @@
 	<stdio.h>
 	<stdlib.h>
 
-1665087350 source:c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\colacp.c
+1665171552 source:c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\colacp.c
 	<stdio.h>
 	<stdlib.h>
 	"colacp.h"
 	<math.h>
 
-1662837382 source:c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\planificador.c
+1665171177 source:c:\users\maas3\desktop\marto\universidad\2022segundocuatrimestre\organización de computadoras\proyecto\codigo\proyecto-orga\planificador.c
+	<stdio.h>
+	<stdlib.h>
+	"colacp.h"
+	<string.h>
 
 1663875721 source:c:\uni\2022-2\orga\proyecto-orga\main.c
 	<stdio.h>
