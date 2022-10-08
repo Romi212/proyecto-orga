@@ -117,27 +117,48 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
         while(cp_cantidad(cola)>0){
              printf("\n ADENTROOO %d",c);
             TEntrada eliminada = cp_eliminar(cola);
-            TCiudad nuevaC = (TCiudad)(eliminada->valor);
-            float dis = distanciaManhattan(nOrigen,nuevaC);
-            TEntrada agregar = (TEntrada) malloc(sizeof(struct entrada));
-            float* clav = (float*)malloc(sizeof(float));
-            *clav = dis;
-            agregar->clave=clav;
-            agregar->valor = nuevaC;
-            cp_insertar(colaNueva,agregar);
-        }
 
+            TCiudad nuevaC = (TCiudad)(eliminada->valor);
+            printf("%d",cp_cantidad(cola));
+            float dis = distanciaManhattan(nOrigen,nuevaC);
+
+            TEntrada agregar = (TEntrada) malloc(sizeof(struct entrada));
+
+            float* clav = (float*)malloc(sizeof(float));
+
+            *clav = dis;
+
+            agregar->clave=clav;
+
+            agregar->valor = nuevaC;
+
+            cp_insertar(colaNueva,agregar);
+           printf("\n HOLA ESTA ES LA ITERACION NUM: %d",c);
+        }
+        aux = cola;
         cola = colaNueva;
         colaNueva = aux;
+
+         printf("\n CANTIDAD ELEMENTOS EN COLA %d",cp_cantidad(cola));
+         printf(" \n CANTIDAD ELEMENTOS EN COLANUEVA %d",cp_cantidad(colaNueva));
+         printf(" \n CANTIDAD ELEMENTOS EN AUX %d",cp_cantidad(aux));
 
         c++;
 
 
     }
+   // printf("ELEMENTOSSS: %d",cp_cantidad(cola));
 
     while(cp_cantidad(cola)>0){
         TEntrada e = cp_eliminar(cola);
-        distancia+=*(float*)(e->clave);
+        TCiudad anteU;
+       if(cp_cantidad(cola)!=0){
+            distancia+=*(float*)(e->clave);
+            anteU = (TCiudad)(e->valor);
+       }
+       else{
+            distancia+=distanciaManhattan((TCiudad)(e->valor),anteU);
+       }
 
         printf("\n %d ",num);
         imprimirCiudad((TCiudad)(e->valor));
@@ -234,11 +255,11 @@ int main(int cantA, char** args){
     //}
 
     printf(" \n CANTIDAD %d",cant);
-    for(int i = 0; i<cant+1; i++){
+    /*for(int i = 0; i<cant+1; i++){
         TCiudad c = ciudades[i];
         if(i!=0)free(c->nombre);
         free(c);
 
-    }
+    }*/
     return 0;
 }
