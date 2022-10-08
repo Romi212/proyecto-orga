@@ -179,7 +179,7 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
 int main(int cantA, char** args){
 
     printf("Leemos el archivo:");
-    TCiudad ciudades [5];
+    TCiudad ciudades [7];
     FILE * archivo = fopen("viajes.txt","r");
     //TCiudad[100] ciudades;
     char linea[100];
@@ -255,11 +255,11 @@ int main(int cantA, char** args){
     //}
 
     printf(" \n CANTIDAD %d",cant);
-    /*for(int i = 0; i<cant+1; i++){
+    for(int i = 0; i<cant+1; i++){
         TCiudad c = ciudades[i];
         if(i!=0)free(c->nombre);
         free(c);
 
-    }*/
+    }
     return 0;
 }
