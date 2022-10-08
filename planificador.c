@@ -85,12 +85,72 @@ void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntr
 //Procedimiento que muestra el listado de ciudades segun la reduccion de horas de manejo
 void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEntrada)){
     float distancia = 0;
+    int c = 1;
+    int num = 1;
+
+
     TColaCP cola = crear_cola_cp(orden);
+    for(int i = 1; i<= cant; i++){
+        TCiudad c = ciudades[i];
+        float distancia = distanciaManhattan(ciudades[0], c);
+        TEntrada e = (TEntrada) malloc(sizeof(struct entrada));
+        float* clave1 = (float*) malloc(sizeof(float));
+        *clave1 = distancia;
+        e->clave = clave1;
+        e->valor = c;
+        cp_insertar(cola,e);
+    }
+
+    TColaCP colaNueva = crear_cola_cp(orden);
+    TColaCP aux = crear_cola_cp(orden);
+
+    while(c<cant-1){
+        TEntrada e = cp_eliminar(cola);
+        distancia+=*(float*)(e->clave);
+        TCiudad nOrigen = (TCiudad)(e->valor);
+
+        printf("\n %d ",num);
+        imprimirCiudad(nOrigen);
+        num++;
+
+         printf("\n %d",c);
+        while(cp_cantidad(cola)>0){
+             printf("\n ADENTROOO %d",c);
+            TEntrada eliminada = cp_eliminar(cola);
+            TCiudad nuevaC = (TCiudad)(eliminada->valor);
+            float dis = distanciaManhattan(nOrigen,nuevaC);
+            TEntrada agregar = (TEntrada) malloc(sizeof(struct entrada));
+            float* clav = (float*)malloc(sizeof(float));
+            *clav = dis;
+            agregar->clave=clav;
+            agregar->valor = nuevaC;
+            cp_insertar(colaNueva,agregar);
+        }
+
+        cola = colaNueva;
+        colaNueva = aux;
+
+        c++;
 
 
+    }
+
+    while(cp_cantidad(cola)>0){
+        TEntrada e = cp_eliminar(cola);
+        distancia+=*(float*)(e->clave);
+
+        printf("\n %d ",num);
+        imprimirCiudad((TCiudad)(e->valor));
+        num++;
+    }
+
+    printf("Total recorrido: %f",distancia);
+
+   cp_destruir(cola,eliminarEntrada);
+    //cp_destruir(colaNueva,eliminarEntrada);
+    //cp_destruir(aux,eliminarEntrada);*/
 
 
-    cp_destruir(cola, eliminarEntrada);
 }
 
 
@@ -172,6 +232,8 @@ int main(int cantA, char** args){
         default: {printf("\n Opcion invalida \n");break;}
       }
     //}
+
+    printf(" \n CANTIDAD %d",cant);
     for(int i = 0; i<cant+1; i++){
         TCiudad c = ciudades[i];
         if(i!=0)free(c->nombre);
