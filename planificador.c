@@ -3,6 +3,9 @@
 #include "colacp.h"
 #include <string.h>
 
+const int MAX_LEN = 100;
+const int MAX_CIUDADES = 7;
+
 typedef struct ciudad {
 char * nombre;
 float pos_x;
@@ -178,34 +181,59 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
 
 int main(int cantA, char** args){
 
-    printf("Leemos el archivo:");
-    TCiudad ciudades [7];
+    printf("Leemos el archivo:\n");
+    TCiudad ciudades [MAX_CIUDADES];
     FILE * archivo = fopen("viajes.txt","r");
-    //TCiudad[100] ciudades;
-    char linea[100];
-    char palabra[50];
-    fgets(linea, 100,archivo);
 
+    //LEEMOS EL ARCHIVO POR LINEA
+    char linea[MAX_LEN];
+    char palabra[50];
+    fgets(linea, MAX_LEN,archivo);
+
+    //la primer linea corresponde a la posicion del origen
     TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
-    if(origen != POS_NULA) {
+    if(origen != POS_NULA) { //si se pudo crear espacio en memoria
+
         char or[10]= "origen";
         origen->nombre = or;
-        origen->pos_x = linea[0]-'0';
-        origen-> pos_y =  linea[2]-'0' ;
+
+        //Leemos la posicion en X
+        int i = 0;
+        char posX[MAX_LEN/2];
+        while(linea[i]!= ';'){
+            posX[i] = linea[i];
+            i++;
+        }
+        posX[i] = '\0';
+        i++;
+
+        //Leemos la posicion en Y
+        char posY[MAX_LEN/2];
+        int j = 0;
+        while(linea[i]!= '\0'){
+           posY[j] = linea[i];
+           i++;
+           j++;
+        }
+        printf("ORINGEN X EN %s pero ATOF %f\n",posX, atof(posX));
+        origen->pos_x = atof(posX);
+        origen->pos_y = atof(posY);
     }
-    printf("Leemos origen en %d %d", linea[0],linea[2]);
+    printf("Leemos origen en %f %f\n", origen->pos_x,origen->pos_y);
     ciudades[0] = origen;
 
-
-    int i = 0;
+    //Empezamos a leer las ciudades
+    int cantCiudades = 0;
     while (fgets(linea, 100,archivo)){
-            printf("Leemos c1 en %d %d", linea[0],linea[2]);
-        i++;
-        TCiudad c1 = (TCiudad)malloc(sizeof(struct ciudad));
-    if(c1 != POS_NULA) {
-         char letra = linea[0];
-         int j = 0;
-          //palabra="pru";
+
+     cantCiudades++;
+     //Reservamos lugar en memoria para cada ciudad
+     TCiudad c1 = (TCiudad)malloc(sizeof(struct ciudad));
+     if(c1 != POS_NULA) {
+
+        //Copiamos el nombre de la ciudad a una var local
+        char letra = linea[0];
+        int j = 0;
         while(letra != ';'){
             palabra[j] = letra;
             printf("%c",letra);
@@ -214,22 +242,48 @@ int main(int cantA, char** args){
         }
         palabra[j] = '\0';
         printf("\n");
-
+        //Reservamos espacio en heap para guardar el nombre
         char * name = (char*)malloc(sizeof(palabra));
         c1->nombre = name;
         strcpy(c1->nombre,palabra);
-       //  c1->nombre = prueba;
-         printf("%s",palabra);
-        c1->pos_x = linea[j+1]- '0';
-        c1-> pos_y = linea[j+3] -'0';
-        ciudades[i] = c1;
+         printf("%s\n",palabra);
+
+        //LEEMOS LAS POS
+        j++;
+        letra = linea[j];
+        int i = 0;
+        //Leemos la posX
+        char  posX[MAX_LEN/2];
+        while(letra!= ';'){
+            posX[i] = letra;
+            i++;
+            j++;
+            letra = linea[j];
+        }
+        posX[i] = '\0';
+        j++;
+        letra = linea[j];
+        //Leemos la pos y
+        char posY[MAX_LEN/2];
+        i = 0;
+        while(letra!= '\0'){
+           posY[i] = letra;
+           i++;
+           j++;
+           letra = linea[j];
+        }
+        c1->pos_x = atof(posX);
+        c1->pos_y = atof(posY);
+        printf("Leemos c1 en %f %f\n", atof(posX),atof(posY));
+
+        ciudades[cantCiudades] = c1;
+     }
     }
-    }
 
 
 
-    //int cant = leerArchivo(ciudades, args[1]);
-    int cant = i;
+    //Metemos todas las ciudades en el arreglo
+    int cant = cantCiudades;
     for(int i = 0; i<cant+1; i++){
         TCiudad c = ciudades[i];
         imprimirCiudad(c);
@@ -239,7 +293,7 @@ int main(int cantA, char** args){
 
     printf("Elija una opcion del menu (su numero): \n");
     int opcion=0;
-    //while(opcion!=4){
+    while(opcion!=4){
 
 
 
@@ -252,7 +306,7 @@ int main(int cantA, char** args){
         case 4: {printf("\n Se cierra el programa");break;}
         default: {printf("\n Opcion invalida \n");break;}
       }
-    //}
+    }
 
     printf(" \n CANTIDAD %d",cant);
     for(int i = 0; i<cant+1; i++){
