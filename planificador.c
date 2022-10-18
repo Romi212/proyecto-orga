@@ -12,6 +12,59 @@ float pos_x;
 float pos_y;
 } * TCiudad;
 
+
+TCiudad leerCiudad(char* linea){
+     TCiudad c1 = (TCiudad)malloc(sizeof(struct ciudad));
+     if(c1 != POS_NULA) {
+        char palabra[MAX_LEN];
+        //Copiamos el nombre de la ciudad a una var local
+        char letra = linea[0];
+        int j = 0;
+        while(letra != ';'){
+            palabra[j] = letra;
+
+            j++;
+             letra = linea[j];
+        }
+        palabra[j] = '\0';
+
+        //Reservamos espacio en heap para guardar el nombre
+        char * name = (char*)malloc(strlen(palabra)*sizeof(char));
+        c1->nombre = name;
+        strcpy(c1->nombre,palabra);
+
+
+        //LEEMOS LAS POS
+        j++;
+        letra = linea[j];
+        int i = 0;
+        //Leemos la posX
+
+        char  posX[MAX_LEN/2];
+        while(letra!= ';'){
+            posX[i] = letra;
+            i++;
+            j++;
+            letra = linea[j];
+        }
+        posX[i] = '\0';
+        j++;
+        letra = linea[j];
+        //Leemos la pos y
+        char posY[MAX_LEN/2];
+        i = 0;
+        while(letra!= '\0'){
+           posY[i] = letra;
+           i++;
+           j++;
+           letra = linea[j];
+        }
+        c1->pos_x = atof(posX);
+        c1->pos_y = atof(posY);
+        }
+
+}
+
 //Funcion free para las entradas
 void eliminarEntrada(TEntrada e){
     free(e->valor);
@@ -226,58 +279,11 @@ int main(int cantA, char** args){
     while (fgets(linea, 100,archivo)){
 
      cantCiudades++;
-     //Reservamos lugar en memoria para cada ciudad
-     TCiudad c1 = (TCiudad)malloc(sizeof(struct ciudad));
-     if(c1 != POS_NULA) {
-
-        //Copiamos el nombre de la ciudad a una var local
-        char letra = linea[0];
-        int j = 0;
-        while(letra != ';'){
-            palabra[j] = letra;
-
-            j++;
-             letra = linea[j];
-        }
-        palabra[j] = '\0';
-
-        //Reservamos espacio en heap para guardar el nombre
-        char * name = (char*)malloc(strlen(palabra)*sizeof(char));
-        c1->nombre = name;
-        strcpy(c1->nombre,palabra);
-
-
-        //LEEMOS LAS POS
-        j++;
-        letra = linea[j];
-        int i = 0;
-        //Leemos la posX
-        char  posX[MAX_LEN/2];
-        while(letra!= ';'){
-            posX[i] = letra;
-            i++;
-            j++;
-            letra = linea[j];
-        }
-        posX[i] = '\0';
-        j++;
-        letra = linea[j];
-        //Leemos la pos y
-        char posY[MAX_LEN/2];
-        i = 0;
-        while(letra!= '\0'){
-           posY[i] = letra;
-           i++;
-           j++;
-           letra = linea[j];
-        }
-        c1->pos_x = atof(posX);
-        c1->pos_y = atof(posY);
-
+     TCiudad c1 = leerCiudad(linea);
 
         ciudades[cantCiudades] = c1;
      }
-    }
+
 
 
 
@@ -286,6 +292,7 @@ int main(int cantA, char** args){
 
     int opcion=0;
     while(opcion!=4){
+       // TCola ciudades = leerArchivo();
       printf("\n Elija una opcion del menu (su numero): \n");
       printf("\n 1: Mostrar ascendente \n 2: Mostrar descendente \n 3: Reducir horas de manejo \n 4: Salir \n");
       scanf("%d",&opcion);
