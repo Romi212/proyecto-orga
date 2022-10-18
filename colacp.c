@@ -73,14 +73,13 @@ static TNodo crear_nuevo_nodo(TNodo padre, int esDer){
 static TNodo get_ultimo_nodo(TColaCP cola){
     //Se busca donde esta el ultimo nodo
     int altura = get_altura((cola->cantidad_elementos)-1);
-   // printf("\n %d",altura);
+
     int fila_completa = pow(2,altura); //Cantidad que debería tener la ultima fila para ser un arbol completo
     //Se calcula la cantidad de nodos de la ultima fila
     int quedan = (cola->cantidad_elementos)- (fila_completa - 1 );
     int pos = quedan;
     //Se busca el padre del nodo
     TNodo padre = get_padre(cola,fila_completa,pos);
-   // printf("El padre es (%d , %s )",*((int*)padre->entrada -> clave),(char*)padre->entrada-> valor);
 
     TNodo nodo;
     if (pos % 2) {
@@ -123,7 +122,7 @@ static void bubble_reverse(TColaCP cola, TNodo padre){
 
 //Método auxiliar para eliminar todos los nodos descendientes del nodo recibido
 static void eliminarRec(TNodo n,void (*fEliminar)(TEntrada)){
-   // printf("eliminarRec con %d ",*((int*)(n->entrada)->clave));
+
     if((n->hijo_izquierdo)!= POS_NULA) eliminarRec(n->hijo_izquierdo,fEliminar);
     if((n->hijo_derecho)!= POS_NULA) eliminarRec(n->hijo_derecho,fEliminar);
    fEliminar(n->entrada);
@@ -143,7 +142,7 @@ TColaCP crear_cola_cp(int (*f)(TEntrada, TEntrada)){
 }
 
 int cp_insertar(TColaCP cola, TEntrada entr){
-   // printf("Entra AL PRINCIPIO '\n" );
+
  //Si se recibe un puntero a nulo no se puede realizar la operacion
     if(cola == POS_NULA) exit(CCP_NO_INI);
     int opExitosa = 1;
@@ -154,7 +153,7 @@ int cp_insertar(TColaCP cola, TEntrada entr){
         cola->raiz = nuevo_nodo;
 
         nuevo_nodo->entrada = entr;
-    //printf("Entra AL MEDIO \n" );
+
 
     }
     else{
@@ -176,9 +175,6 @@ int cp_insertar(TColaCP cola, TEntrada entr){
             nuevoNodo->entrada = entr;
             //Se acomoda para respetar el orden
             bubble(nuevoNodo, cola);
-             //printf("Entra AL FINAL \n" );
-
-
         }
     }
     if(opExitosa) cola->cantidad_elementos++;
@@ -196,20 +192,16 @@ TEntrada cp_eliminar(TColaCP cola){
 
     if(cola->cantidad_elementos>1){
 
-
-    //printf("Se saca de la cola (%d , %s ) y queda con %d elementos ",*((int*)entrada_min -> clave),(char*)entrada_min -> valor,cola->cantidad_elementos);
-
     // Poner la ultima entrada en la raiz
     TNodo ultimo_nodo = get_ultimo_nodo(cola);
-   //TEntrada ultimoN = ultimo_nodo->entrada;
-   // printf("a ver ultimo nodo (%d , %s )",*((int*)ultimoN -> clave),(char*)ultimoN -> valor);
+
     cola->raiz->entrada = ultimo_nodo->entrada;
 
     free(ultimo_nodo);
     cola->cantidad_elementos--;
 
 
-    //BUbble hacia abajo
+    //Bubble hacia abajo
 
     bubble_reverse(cola, cola->raiz);
 
@@ -238,7 +230,6 @@ void cp_destruir(TColaCP cola, void (*fEliminar)(TEntrada)){
 
     //Si la cola tiene elementos se elimina cada uno de forma recursiva
     if(cola->raiz != POS_NULA){
-            //printf("Hay raiz \n");
         TNodo nodo = cola-> raiz;
         eliminarRec(nodo,fEliminar);
     }

@@ -22,14 +22,13 @@ void eliminarEntrada(TEntrada e){
 void imprimirCiudad(TCiudad c){
     char* pl = c->nombre;
     int i = 0;
-
-    printf("\n \n Nombre: ");
     while(pl[i] != '\0'){
         printf("%c",pl[i]);
         i++;
 
     }
-    printf(" en pos(%f, %f) \n",c->pos_x,c->pos_y);
+    printf(".");
+    //printf(" en pos(%f, %f) \n",c->pos_x,c->pos_y);
 }
 
 //Funcion comparador para ordenar ascendentemente
@@ -62,6 +61,8 @@ float distanciaManhattan(TCiudad c1, TCiudad c2){
 
 //Procedimiento para mostrar ascendente o descendentemente el listado de ciudades segun el comparador que le pasen
 void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntrada)){
+
+
     TColaCP cola = crear_cola_cp(orden);
 
     for(int i = 1; i<= cant; i++){
@@ -79,6 +80,7 @@ void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntr
         TEntrada e = cp_eliminar(cola);
         printf("%d . ",i);
         imprimirCiudad((TCiudad)e->valor);
+        printf("\n");
         i++;
     }
     cp_destruir(cola, eliminarEntrada);
@@ -90,7 +92,6 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
     float distancia = 0;
     int c = 1;
     int num = 1;
-
 
     TColaCP cola = crear_cola_cp(orden);
     for(int i = 1; i<= cant; i++){
@@ -112,17 +113,18 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
         distancia+=*(float*)(e->clave);
         TCiudad nOrigen = (TCiudad)(e->valor);
 
-        printf("\n %d ",num);
+        printf("%d . ",num);
         imprimirCiudad(nOrigen);
+        printf("\n");
         num++;
 
-         printf("\n %d",c);
+
         while(cp_cantidad(cola)>0){
-             printf("\n ADENTROOO %d",c);
+
             TEntrada eliminada = cp_eliminar(cola);
 
             TCiudad nuevaC = (TCiudad)(eliminada->valor);
-            printf("%d",cp_cantidad(cola));
+
             float dis = distanciaManhattan(nOrigen,nuevaC);
 
             TEntrada agregar = (TEntrada) malloc(sizeof(struct entrada));
@@ -136,21 +138,17 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
             agregar->valor = nuevaC;
 
             cp_insertar(colaNueva,agregar);
-           printf("\n HOLA ESTA ES LA ITERACION NUM: %d",c);
+
         }
         aux = cola;
         cola = colaNueva;
         colaNueva = aux;
 
-         printf("\n CANTIDAD ELEMENTOS EN COLA %d",cp_cantidad(cola));
-         printf(" \n CANTIDAD ELEMENTOS EN COLANUEVA %d",cp_cantidad(colaNueva));
-         printf(" \n CANTIDAD ELEMENTOS EN AUX %d",cp_cantidad(aux));
-
         c++;
 
 
     }
-   // printf("ELEMENTOSSS: %d",cp_cantidad(cola));
+
 
     while(cp_cantidad(cola)>0){
         TEntrada e = cp_eliminar(cola);
@@ -162,13 +160,14 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
        else{
             distancia+=distanciaManhattan((TCiudad)(e->valor),anteU);
        }
-
-        printf("\n %d ",num);
+        printf("%d . ",num);
         imprimirCiudad((TCiudad)(e->valor));
+        printf("\n");
         num++;
     }
 
-    printf("Total recorrido: %f",distancia);
+    printf("Total recorrido: %.2f",distancia);
+    printf("\n");
 
    cp_destruir(cola,eliminarEntrada);
     //cp_destruir(colaNueva,eliminarEntrada);
@@ -181,9 +180,9 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
 
 int main(int cantA, char** args){
 
-    printf("Leemos el archivo:\n");
+
     TCiudad ciudades [MAX_CIUDADES];
-    FILE * archivo = fopen("viajes.txt","r");
+    FILE * archivo = fopen(args[1],"r");
 
     //LEEMOS EL ARCHIVO POR LINEA
     char linea[MAX_LEN];
@@ -215,11 +214,11 @@ int main(int cantA, char** args){
            i++;
            j++;
         }
-        printf("ORINGEN X EN %s pero ATOF %f\n",posX, atof(posX));
+
         origen->pos_x = atof(posX);
         origen->pos_y = atof(posY);
     }
-    printf("Leemos origen en %f %f\n", origen->pos_x,origen->pos_y);
+
     ciudades[0] = origen;
 
     //Empezamos a leer las ciudades
@@ -236,17 +235,17 @@ int main(int cantA, char** args){
         int j = 0;
         while(letra != ';'){
             palabra[j] = letra;
-            printf("%c",letra);
+
             j++;
              letra = linea[j];
         }
         palabra[j] = '\0';
-        printf("\n");
+
         //Reservamos espacio en heap para guardar el nombre
-        char * name = (char*)malloc(sizeof(palabra));
+        char * name = (char*)malloc(strlen(palabra)*sizeof(char));
         c1->nombre = name;
         strcpy(c1->nombre,palabra);
-         printf("%s\n",palabra);
+
 
         //LEEMOS LAS POS
         j++;
@@ -274,7 +273,7 @@ int main(int cantA, char** args){
         }
         c1->pos_x = atof(posX);
         c1->pos_y = atof(posY);
-        printf("Leemos c1 en %f %f\n", atof(posX),atof(posY));
+
 
         ciudades[cantCiudades] = c1;
      }
@@ -282,33 +281,23 @@ int main(int cantA, char** args){
 
 
 
-    //Metemos todas las ciudades en el arreglo
-    int cant = cantCiudades;
-    for(int i = 0; i<cant+1; i++){
-        TCiudad c = ciudades[i];
-        imprimirCiudad(c);
 
-    }
-
+   int cant = cantCiudades;
 
     printf("Elija una opcion del menu (su numero): \n");
     int opcion=0;
     while(opcion!=4){
-
-
-
-      printf("1: Mostrar ascendente \n 2: Mostrar descendente \n 3: Reducir horas de manejo \n 4: Salir \n");
+      printf("\n 1: Mostrar ascendente \n 2: Mostrar descendente \n 3: Reducir horas de manejo \n 4: Salir \n");
       scanf("%d",&opcion);
       switch(opcion){
-        case 1: {mostrarOrdenado(ciudades, cant, ordenarAsc); break;}
-        case 2: {mostrarOrdenado(ciudades, cant, ordenarDes);break;}
-        case 3: {reducirHorasManejo(ciudades, cant, ordenarAsc);break;}
+        case 1: {printf("\n Mostrar ascendente \n"); mostrarOrdenado(ciudades, cant, ordenarAsc); break;}
+        case 2: {printf("\n Mostrar descendente \n");mostrarOrdenado(ciudades, cant, ordenarDes);break;}
+        case 3: {printf("\n Reducir horas de manejo \n");reducirHorasManejo(ciudades, cant, ordenarAsc);break;}
         case 4: {printf("\n Se cierra el programa");break;}
         default: {printf("\n Opcion invalida \n");break;}
       }
     }
 
-    printf(" \n CANTIDAD %d",cant);
     for(int i = 0; i<cant+1; i++){
         TCiudad c = ciudades[i];
         if(i!=0)free(c->nombre);
