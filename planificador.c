@@ -4,7 +4,7 @@
 #include <string.h>
 
 const int MAX_LEN = 100;
-const int MAX_CIUDADES = 7;
+const int MAX_CIUDADES = 5;
 
 typedef struct ciudad {
 char * nombre;
@@ -284,9 +284,9 @@ int main(int cantA, char** args){
 
    int cant = cantCiudades;
 
-    printf("Elija una opcion del menu (su numero): \n");
     int opcion=0;
     while(opcion!=4){
+      printf("\n Elija una opcion del menu (su numero): \n");
       printf("\n 1: Mostrar ascendente \n 2: Mostrar descendente \n 3: Reducir horas de manejo \n 4: Salir \n");
       scanf("%d",&opcion);
       switch(opcion){

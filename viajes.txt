@@ -1,7 +1,5 @@
-1.25;1
+1;1
 Saliquelo;2;2
 Bahia Blanca;4;4
 Trenque Lauquen;4;0
 Carhue;0;3
-Buenos Aires;6;6
-PepeLandia;-23.67;7
