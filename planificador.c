@@ -4,7 +4,8 @@
 #include <string.h>
 
 const int MAX_LEN = 100;
-const int MAX_CIUDADES = 5;
+
+
 
 typedef struct ciudad {
 char * nombre;
@@ -62,12 +63,18 @@ TCiudad leerCiudad(char* linea){
         c1->pos_x = atof(posX);
         c1->pos_y = atof(posY);
         }
+    return c1;
+}
 
+void eliminarCiudad(TCiudad c){
+    free(c->nombre);
+    free(c);
 }
 
 //Funcion free para las entradas
 void eliminarEntrada(TEntrada e){
-    free(e->valor);
+
+    eliminarCiudad((TCiudad) e->valor);
     free(e->clave);
     free(e);
 }
@@ -113,14 +120,50 @@ float distanciaManhattan(TCiudad c1, TCiudad c2){
 
 
 //Procedimiento para mostrar ascendente o descendentemente el listado de ciudades segun el comparador que le pasen
-void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntrada)){
+void mostrarOrdenado( char* file_p, int (*orden)(TEntrada, TEntrada)){
 
 
     TColaCP cola = crear_cola_cp(orden);
 
-    for(int i = 1; i<= cant; i++){
-        TCiudad c = ciudades[i];
-        float distancia = distanciaManhattan(ciudades[0], c);
+    FILE * archivo = fopen(file_p,"r");
+
+    //LEEMOS EL ARCHIVO POR LINEA
+    char linea[MAX_LEN];
+    char palabra[50];
+    fgets(linea, MAX_LEN,archivo);
+
+    float origen_x;
+    float origen_y;
+
+    char letra = linea[0];
+    int i = 0;
+    while(letra != ';'){
+        palabra[i] = letra;
+        letra = linea[++i];
+    }
+    palabra[i] = '\0';
+    origen_x = atof(palabra);
+    int j = 0;
+    i++;
+    letra = linea[i];
+    while(letra!= '\0'){
+        palabra[j++] = letra;
+        letra = linea[++i];
+    }
+    palabra[j] = '\0';
+    origen_y = atof(palabra);
+
+    TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
+    if(origen != POS_NULA){
+        origen->nombre = NULL;
+        origen->pos_x = origen_x;
+        origen->pos_y = origen_y;
+    }
+
+
+    while(fgets(linea, MAX_LEN,archivo)){
+        TCiudad c = leerCiudad(linea);
+        float distancia = distanciaManhattan(origen, c);
         TEntrada e = (TEntrada) malloc(sizeof(struct entrada));
         float* clave1 = (float*) malloc(sizeof(float));
         *clave1 = distancia;
@@ -128,11 +171,13 @@ void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntr
         e->valor = c;
         cp_insertar(cola,e);
     }
-    int i = 1;
+     i = 1;
     while(cp_cantidad(cola)>0){
         TEntrada e = cp_eliminar(cola);
         printf("%d . ",i);
-        imprimirCiudad((TCiudad)e->valor);
+        TCiudad ciudad = (TCiudad)e->valor;
+        imprimirCiudad(ciudad);
+        eliminarEntrada(e);
         printf("\n");
         i++;
     }
@@ -141,15 +186,53 @@ void mostrarOrdenado(TCiudad ciudades [], int cant, int (*orden)(TEntrada, TEntr
 
 
 //Procedimiento que muestra el listado de ciudades segun la reduccion de horas de manejo
-void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEntrada)){
+void reducirHorasManejo(char* file_p){
     float distancia = 0;
     int c = 1;
     int num = 1;
 
-    TColaCP cola = crear_cola_cp(orden);
-    for(int i = 1; i<= cant; i++){
-        TCiudad c = ciudades[i];
-        float distancia = distanciaManhattan(ciudades[0], c);
+    TColaCP cola = crear_cola_cp(ordenarAsc);
+
+    FILE * archivo = fopen(file_p,"r");
+
+    //LEEMOS EL ARCHIVO POR LINEA
+    char linea[MAX_LEN];
+    char palabra[50];
+    fgets(linea, MAX_LEN,archivo);
+
+    float origen_x;
+    float origen_y;
+
+    char letra = linea[0];
+    int i = 0;
+    while(letra != ';'){
+        palabra[i] = letra;
+        letra = linea[++i];
+    }
+    palabra[i] = '\0';
+    origen_x = atof(palabra);
+    int j = 0;
+    i++;
+    letra = linea[i];
+    while(letra!= '\0'){
+        palabra[j++] = letra;
+        letra = linea[++i];
+    }
+    palabra[j] = '\0';
+    origen_y = atof(palabra);
+
+    //guardamos origen como una ciudad
+    TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
+    if(origen != POS_NULA){
+        origen->nombre = NULL;
+        origen->pos_x = origen_x;
+        origen->pos_y = origen_y;
+    }
+
+    //Leemos todas las ciudades y las guardamos en una cola de forma desc
+    while(fgets(linea, MAX_LEN,archivo)){
+        TCiudad c = leerCiudad(linea);
+        float distancia = distanciaManhattan(origen, c);
         TEntrada e = (TEntrada) malloc(sizeof(struct entrada));
         float* clave1 = (float*) malloc(sizeof(float));
         *clave1 = distancia;
@@ -157,21 +240,30 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
         e->valor = c;
         cp_insertar(cola,e);
     }
+    //cerramos el archivo
+    fclose(archivo);
 
-    TColaCP colaNueva = crear_cola_cp(orden);
-    TColaCP aux = crear_cola_cp(orden);
-
+    TColaCP colaNueva = crear_cola_cp(ordenarAsc);
+    TColaCP aux ;
+    int cant = (cola->cantidad_elementos);
     while(c<cant-1){
+        //Agarra la ciudad mas cercana
         TEntrada e = cp_eliminar(cola);
+        //Suma la distancia desde origen a esta ciudad
         distancia+=*(float*)(e->clave);
+        //Cambia el origen a esta
         TCiudad nOrigen = (TCiudad)(e->valor);
+        //Libera la entrada (manteniendo la ciudad)
+        free(e->clave);
+        free(e);
 
+        //Imprime la ciudad que  visito
         printf("%d . ",num);
         imprimirCiudad(nOrigen);
         printf("\n");
         num++;
 
-
+        //Guarda el resto en otra cola calculando las distancias desde pos actual
         while(cp_cantidad(cola)>0){
 
             TEntrada eliminada = cp_eliminar(cola);
@@ -180,17 +272,9 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
 
             float dis = distanciaManhattan(nOrigen,nuevaC);
 
-            TEntrada agregar = (TEntrada) malloc(sizeof(struct entrada));
+            *((float*)eliminada->clave) = dis;
 
-            float* clav = (float*)malloc(sizeof(float));
-
-            *clav = dis;
-
-            agregar->clave=clav;
-
-            agregar->valor = nuevaC;
-
-            cp_insertar(colaNueva,agregar);
+            cp_insertar(colaNueva,eliminada);
 
         }
         aux = cola;
@@ -198,6 +282,8 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
         colaNueva = aux;
 
         c++;
+
+        eliminarCiudad(nOrigen);
 
 
     }
@@ -217,14 +303,15 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
         imprimirCiudad((TCiudad)(e->valor));
         printf("\n");
         num++;
+        eliminarEntrada(e);
     }
 
     printf("Total recorrido: %.2f",distancia);
     printf("\n");
 
    cp_destruir(cola,eliminarEntrada);
-    //cp_destruir(colaNueva,eliminarEntrada);
-    //cp_destruir(aux,eliminarEntrada);*/
+    cp_destruir(colaNueva,eliminarEntrada);
+
 
 
 }
@@ -234,82 +321,23 @@ void reducirHorasManejo(TCiudad ciudades[], int cant, int (*orden)(TEntrada, TEn
 int main(int cantA, char** args){
 
 
-    TCiudad ciudades [MAX_CIUDADES];
-    FILE * archivo = fopen(args[1],"r");
 
-    //LEEMOS EL ARCHIVO POR LINEA
-    char linea[MAX_LEN];
-    char palabra[50];
-    fgets(linea, MAX_LEN,archivo);
-
-    //la primer linea corresponde a la posicion del origen
-    TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
-    if(origen != POS_NULA) { //si se pudo crear espacio en memoria
-
-        char or[10]= "origen";
-        origen->nombre = or;
-
-        //Leemos la posicion en X
-        int i = 0;
-        char posX[MAX_LEN/2];
-        while(linea[i]!= ';'){
-            posX[i] = linea[i];
-            i++;
-        }
-        posX[i] = '\0';
-        i++;
-
-        //Leemos la posicion en Y
-        char posY[MAX_LEN/2];
-        int j = 0;
-        while(linea[i]!= '\0'){
-           posY[j] = linea[i];
-           i++;
-           j++;
-        }
-
-        origen->pos_x = atof(posX);
-        origen->pos_y = atof(posY);
-    }
-
-    ciudades[0] = origen;
-
-    //Empezamos a leer las ciudades
-    int cantCiudades = 0;
-    while (fgets(linea, 100,archivo)){
-
-     cantCiudades++;
-     TCiudad c1 = leerCiudad(linea);
-
-        ciudades[cantCiudades] = c1;
-     }
-
-
-
-
-
-   int cant = cantCiudades;
 
     int opcion=0;
     while(opcion!=4){
-       // TCola ciudades = leerArchivo();
+
       printf("\n Elija una opcion del menu (su numero): \n");
       printf("\n 1: Mostrar ascendente \n 2: Mostrar descendente \n 3: Reducir horas de manejo \n 4: Salir \n");
       scanf("%d",&opcion);
       switch(opcion){
-        case 1: {printf("\n Mostrar ascendente \n"); mostrarOrdenado(ciudades, cant, ordenarAsc); break;}
-        case 2: {printf("\n Mostrar descendente \n");mostrarOrdenado(ciudades, cant, ordenarDes);break;}
-        case 3: {printf("\n Reducir horas de manejo \n");reducirHorasManejo(ciudades, cant, ordenarAsc);break;}
+        case 1: {printf("\n Mostrar ascendente \n"); mostrarOrdenado(args[1], ordenarAsc); break;}
+        case 2: {printf("\n Mostrar descendente \n");mostrarOrdenado(args[1], ordenarDes);break;}
+        case 3: {printf("\n Reducir horas de manejo \n");reducirHorasManejo(args[1] );break;}
         case 4: {printf("\n Se cierra el programa");break;}
         default: {printf("\n Opcion invalida \n");break;}
       }
     }
 
-    for(int i = 0; i<cant+1; i++){
-        TCiudad c = ciudades[i];
-        if(i!=0)free(c->nombre);
-        free(c);
 
-    }
     return 0;
 }
