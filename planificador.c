@@ -253,23 +253,33 @@ void reducirHorasManejo(char* file_p){
 
     }
 
-
-    while(cp_cantidad(cola)>0){
-        TEntrada e = cp_eliminar(cola);
         TCiudad anteU;
+        TCiudad ultima;
+        TEntrada e;
+    while(cp_cantidad(cola)>0){
+        e = cp_eliminar(cola);
+
        if(cp_cantidad(cola)!=0){
             distancia+=*(float*)(e->clave);
             anteU = (TCiudad)(e->valor);
        }
        else{
-            distancia+=distanciaManhattan((TCiudad)(e->valor),anteU);
+            ultima=(TCiudad)(e->valor);
+            distancia+=distanciaManhattan(ultima,anteU);
+            eliminarCiudad(anteU);
+
        }
+
         printf("%d . ",num);
         imprimirCiudad((TCiudad)(e->valor));
         printf("\n");
         num++;
-        eliminarEntrada(e);
+        free(e->clave);
+        free(e);
+
     }
+    eliminarCiudad(ultima);
+
 
     printf("Total recorrido: %.2f",distancia);
     printf("\n");
