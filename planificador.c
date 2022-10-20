@@ -13,6 +13,11 @@ float pos_x;
 float pos_y;
 } * TCiudad;
 
+float distanciaManhattan(TCiudad c1, TCiudad c2){
+    float resultado=0;
+    resultado = abs((c1->pos_x)-(c2->pos_x)) + abs((c1->pos_y)-(c2->pos_y));
+    return resultado;
+}
 
 TCiudad leerCiudad(char* linea){
      TCiudad c1 = (TCiudad)malloc(sizeof(struct ciudad));
@@ -66,6 +71,59 @@ TCiudad leerCiudad(char* linea){
     return c1;
 }
 
+void leerArchivo(char* file_p, TColaCP cola, TCiudad origen){
+
+    FILE * archivo = fopen(file_p,"r");
+
+    //LEEMOS EL ARCHIVO POR LINEA
+    char linea[MAX_LEN];
+    char palabra[50];
+    fgets(linea, MAX_LEN,archivo);
+
+    //Leemos el origen y lo almacenamos en una ciudad
+    float origen_x;
+    float origen_y;
+
+    char letra = linea[0];
+    int i = 0;
+    while(letra != ';'){
+        palabra[i] = letra;
+        letra = linea[++i];
+    }
+    palabra[i] = '\0';
+    origen_x = atof(palabra);
+    int j = 0;
+    i++;
+    letra = linea[i];
+    while(letra!= '\0'){
+        palabra[j++] = letra;
+        letra = linea[++i];
+    }
+    palabra[j] = '\0';
+    origen_y = atof(palabra);
+
+
+    if(origen != POS_NULA){
+        origen->nombre = NULL;
+        origen->pos_x = origen_x;
+        origen->pos_y = origen_y;
+    }
+
+    //Leemos el resto de las lineas creando las ciudades, y las guardamos en la cola
+    while(fgets(linea, MAX_LEN,archivo)){
+        TCiudad c = leerCiudad(linea);
+        float distancia = distanciaManhattan(origen, c);
+        TEntrada e = (TEntrada) malloc(sizeof(struct entrada));
+        float* clave1 = (float*) malloc(sizeof(float));
+        *clave1 = distancia;
+        e->clave = clave1;
+        e->valor = c;
+        cp_insertar(cola,e);
+    }
+    fclose(archivo);
+}
+
+
 void eliminarCiudad(TCiudad c){
     free(c->nombre);
     free(c);
@@ -112,11 +170,7 @@ int ordenarDes(TEntrada e1, TEntrada e2){
 }
 
 //Funcion que computa la distancia entre ciudades
-float distanciaManhattan(TCiudad c1, TCiudad c2){
-    float resultado=0;
-    resultado = abs((c1->pos_x)-(c2->pos_x)) + abs((c1->pos_y)-(c2->pos_y));
-    return resultado;
-}
+
 
 
 //Procedimiento para mostrar ascendente o descendentemente el listado de ciudades segun el comparador que le pasen
@@ -124,54 +178,11 @@ void mostrarOrdenado( char* file_p, int (*orden)(TEntrada, TEntrada)){
 
 
     TColaCP cola = crear_cola_cp(orden);
-
-    FILE * archivo = fopen(file_p,"r");
-
-    //LEEMOS EL ARCHIVO POR LINEA
-    char linea[MAX_LEN];
-    char palabra[50];
-    fgets(linea, MAX_LEN,archivo);
-
-    float origen_x;
-    float origen_y;
-
-    char letra = linea[0];
-    int i = 0;
-    while(letra != ';'){
-        palabra[i] = letra;
-        letra = linea[++i];
-    }
-    palabra[i] = '\0';
-    origen_x = atof(palabra);
-    int j = 0;
-    i++;
-    letra = linea[i];
-    while(letra!= '\0'){
-        palabra[j++] = letra;
-        letra = linea[++i];
-    }
-    palabra[j] = '\0';
-    origen_y = atof(palabra);
-
     TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
-    if(origen != POS_NULA){
-        origen->nombre = NULL;
-        origen->pos_x = origen_x;
-        origen->pos_y = origen_y;
-    }
 
+    leerArchivo(file_p, cola, origen);
 
-    while(fgets(linea, MAX_LEN,archivo)){
-        TCiudad c = leerCiudad(linea);
-        float distancia = distanciaManhattan(origen, c);
-        TEntrada e = (TEntrada) malloc(sizeof(struct entrada));
-        float* clave1 = (float*) malloc(sizeof(float));
-        *clave1 = distancia;
-        e->clave = clave1;
-        e->valor = c;
-        cp_insertar(cola,e);
-    }
-     i = 1;
+    int i = 1;
     while(cp_cantidad(cola)>0){
         TEntrada e = cp_eliminar(cola);
         printf("%d . ",i);
@@ -193,55 +204,9 @@ void reducirHorasManejo(char* file_p){
 
     TColaCP cola = crear_cola_cp(ordenarAsc);
 
-    FILE * archivo = fopen(file_p,"r");
-
-    //LEEMOS EL ARCHIVO POR LINEA
-    char linea[MAX_LEN];
-    char palabra[50];
-    fgets(linea, MAX_LEN,archivo);
-
-    float origen_x;
-    float origen_y;
-
-    char letra = linea[0];
-    int i = 0;
-    while(letra != ';'){
-        palabra[i] = letra;
-        letra = linea[++i];
-    }
-    palabra[i] = '\0';
-    origen_x = atof(palabra);
-    int j = 0;
-    i++;
-    letra = linea[i];
-    while(letra!= '\0'){
-        palabra[j++] = letra;
-        letra = linea[++i];
-    }
-    palabra[j] = '\0';
-    origen_y = atof(palabra);
-
-    //guardamos origen como una ciudad
     TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
-    if(origen != POS_NULA){
-        origen->nombre = NULL;
-        origen->pos_x = origen_x;
-        origen->pos_y = origen_y;
-    }
 
-    //Leemos todas las ciudades y las guardamos en una cola de forma desc
-    while(fgets(linea, MAX_LEN,archivo)){
-        TCiudad c = leerCiudad(linea);
-        float distancia = distanciaManhattan(origen, c);
-        TEntrada e = (TEntrada) malloc(sizeof(struct entrada));
-        float* clave1 = (float*) malloc(sizeof(float));
-        *clave1 = distancia;
-        e->clave = clave1;
-        e->valor = c;
-        cp_insertar(cola,e);
-    }
-    //cerramos el archivo
-    fclose(archivo);
+    leerArchivo(file_p, cola, origen);
 
     TColaCP colaNueva = crear_cola_cp(ordenarAsc);
     TColaCP aux ;
