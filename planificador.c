@@ -6,6 +6,7 @@
 const int MAX_LEN = 100;
 
 
+//---------------------------------------------------------//
 
 typedef struct ciudad {
 char * nombre;
@@ -13,12 +14,14 @@ float pos_x;
 float pos_y;
 } * TCiudad;
 
+//Funcion que computa la distancia entre dos ciudades
 float distanciaManhattan(TCiudad c1, TCiudad c2){
     float resultado=0;
     resultado = abs((c1->pos_x)-(c2->pos_x)) + abs((c1->pos_y)-(c2->pos_y));
     return resultado;
 }
 
+//Funcion que lee una ciudad del archivo y la crea para posterior uso
 TCiudad leerCiudad(char* linea){
      TCiudad c1 = (TCiudad)malloc(sizeof(struct ciudad));
      if(c1 != POS_NULA) {
@@ -124,6 +127,7 @@ void leerArchivo(char* file_p, TColaCP cola, TCiudad origen){
 }
 
 
+//Funcion free para la ciudad
 void eliminarCiudad(TCiudad c){
     free(c->nombre);
     free(c);
@@ -137,6 +141,7 @@ void eliminarEntrada(TEntrada e){
     free(e);
 }
 
+//Funcion que imprime por consola la ciudad
 void imprimirCiudad(TCiudad c){
     char* pl = c->nombre;
     int i = 0;
@@ -146,7 +151,6 @@ void imprimirCiudad(TCiudad c){
 
     }
     printf(".");
-    //printf(" en pos(%f, %f) \n",c->pos_x,c->pos_y);
 }
 
 //Funcion comparador para ordenar ascendentemente
@@ -169,9 +173,6 @@ int ordenarDes(TEntrada e1, TEntrada e2){
 
 }
 
-//Funcion que computa la distancia entre ciudades
-
-
 
 //Procedimiento para mostrar ascendente o descendentemente el listado de ciudades segun el comparador que le pasen
 void mostrarOrdenado( char* file_p, int (*orden)(TEntrada, TEntrada)){
@@ -183,10 +184,12 @@ void mostrarOrdenado( char* file_p, int (*orden)(TEntrada, TEntrada)){
     leerArchivo(file_p, cola, origen);
 
     int i = 1;
+    TEntrada e;
+    TCiudad ciudad;
     while(cp_cantidad(cola)>0){
-        TEntrada e = cp_eliminar(cola);
+        e = cp_eliminar(cola);
         printf("%d . ",i);
-        TCiudad ciudad = (TCiudad)e->valor;
+        ciudad = (TCiudad)e->valor;
         imprimirCiudad(ciudad);
         eliminarEntrada(e);
         printf("\n");
@@ -199,8 +202,8 @@ void mostrarOrdenado( char* file_p, int (*orden)(TEntrada, TEntrada)){
 //Procedimiento que muestra el listado de ciudades segun la reduccion de horas de manejo
 void reducirHorasManejo(char* file_p){
     float distancia = 0;
-    int c = 1;
-    int num = 1;
+    int c = 1; //contador
+    int num = 1; //variable que se utiliza para ir imprimiendo las ciudades
 
     TColaCP cola = crear_cola_cp(ordenarAsc);
 
@@ -209,15 +212,21 @@ void reducirHorasManejo(char* file_p){
     leerArchivo(file_p, cola, origen);
 
     TColaCP colaNueva = crear_cola_cp(ordenarAsc);
-    TColaCP aux ;
+    TColaCP aux;
     int cant = (cola->cantidad_elementos);
+    TEntrada e;
+    TCiudad nOrigen;
+    TEntrada eliminada;
+    TCiudad nuevaC;
+    float dis;
+
     while(c<cant-1){
         //Agarra la ciudad mas cercana
-        TEntrada e = cp_eliminar(cola);
+        e = cp_eliminar(cola);
         //Suma la distancia desde origen a esta ciudad
         distancia+=*(float*)(e->clave);
         //Cambia el origen a esta
-        TCiudad nOrigen = (TCiudad)(e->valor);
+        nOrigen = (TCiudad)(e->valor);
         //Libera la entrada (manteniendo la ciudad)
         free(e->clave);
         free(e);
@@ -231,17 +240,18 @@ void reducirHorasManejo(char* file_p){
         //Guarda el resto en otra cola calculando las distancias desde pos actual
         while(cp_cantidad(cola)>0){
 
-            TEntrada eliminada = cp_eliminar(cola);
+            eliminada = cp_eliminar(cola);
 
-            TCiudad nuevaC = (TCiudad)(eliminada->valor);
+            nuevaC = (TCiudad)(eliminada->valor);
 
-            float dis = distanciaManhattan(nOrigen,nuevaC);
+            dis = distanciaManhattan(nOrigen,nuevaC);
 
             *((float*)eliminada->clave) = dis;
 
             cp_insertar(colaNueva,eliminada);
 
         }
+        //Hace un swap entre las colas para poder reutilizarlas
         aux = cola;
         cola = colaNueva;
         colaNueva = aux;
@@ -255,7 +265,8 @@ void reducirHorasManejo(char* file_p){
 
         TCiudad anteU;
         TCiudad ultima;
-        TEntrada e;
+
+    //Imprime las ultimas dos ciudades que quedaron en la cola
     while(cp_cantidad(cola)>0){
         e = cp_eliminar(cola);
 
@@ -284,7 +295,7 @@ void reducirHorasManejo(char* file_p){
     printf("Total recorrido: %.2f",distancia);
     printf("\n");
 
-   cp_destruir(cola,eliminarEntrada);
+    cp_destruir(cola,eliminarEntrada);
     cp_destruir(colaNueva,eliminarEntrada);
 
 
@@ -292,11 +303,9 @@ void reducirHorasManejo(char* file_p){
 }
 
 
+//---------------------------------------------------------//
 
 int main(int cantA, char** args){
-
-
-
 
     int opcion=0;
     while(opcion!=4){

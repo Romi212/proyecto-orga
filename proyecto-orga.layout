@@ -2,9 +2,14 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
+	<File name="planificador.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="-1" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5104" topLine="290" />
+		</Cursor>
+	</File>
 	<File name="colacp.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="827" topLine="22" />
+			<Cursor1 position="827" topLine="21" />
 		</Cursor>
 	</File>
 	<File name="colacp.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="2" zoom_2="0">
@@ -24,10 +29,5 @@
 			<Collapse line="183" />
 			<Collapse line="220" />
 		</Folding>
-	</File>
-	<File name="planificador.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7094" topLine="278" />
-		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
