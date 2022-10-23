@@ -285,7 +285,7 @@ void reducirHorasManejo(char* file_p){
 
     }
 
-        TCiudad anteU;
+        TCiudad anteU = origen;
         TCiudad ultima;
 
     //Imprime las ultimas dos ciudades que quedaron en la cola
