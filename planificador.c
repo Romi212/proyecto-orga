@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "colacp.h"
 #include <string.h>
+#include <math.h>
 
 const int MAX_LEN = 100;
 
@@ -17,7 +18,7 @@ float pos_y;
 //Funcion que computa la distancia entre dos ciudades
 float distanciaManhattan(TCiudad c1, TCiudad c2){
     float resultado=0;
-    resultado = abs((c1->pos_x)-(c2->pos_x)) + abs((c1->pos_y)-(c2->pos_y));
+    resultado = fabs((c1->pos_x)-(c2->pos_x)) + fabs((c1->pos_y)-(c2->pos_y));
     return resultado;
 }
 
@@ -74,6 +75,7 @@ TCiudad leerCiudad(char* linea){
     return c1;
 }
 
+//Funcion que lee el archivo y guarda las ciudades en la cola que recibe
 void leerArchivo(char* file_p, TColaCP cola, TCiudad origen){
 
     FILE * archivo = fopen(file_p,"r");
@@ -112,12 +114,24 @@ void leerArchivo(char* file_p, TColaCP cola, TCiudad origen){
         origen->pos_y = origen_y;
     }
 
+    TCiudad c;
+    TEntrada e;
+    float distancia;
+    float* clave1;
+
     //Leemos el resto de las lineas creando las ciudades, y las guardamos en la cola
     while(fgets(linea, MAX_LEN,archivo)){
-        TCiudad c = leerCiudad(linea);
-        float distancia = distanciaManhattan(origen, c);
-        TEntrada e = (TEntrada) malloc(sizeof(struct entrada));
-        float* clave1 = (float*) malloc(sizeof(float));
+        c = leerCiudad(linea);
+        if(c == POS_NULA) exit(MEMO_ERR);
+
+        distancia = distanciaManhattan(origen, c);
+
+        e = (TEntrada) malloc(sizeof(struct entrada));
+        if(e == POS_NULA) exit(MEMO_ERR);
+
+        clave1 = (float*) malloc(sizeof(float));
+        if(clave1 == POS_NULA) exit(MEMO_ERR);
+
         *clave1 = distancia;
         e->clave = clave1;
         e->valor = c;
@@ -174,18 +188,23 @@ int ordenarDes(TEntrada e1, TEntrada e2){
 }
 
 
-//Procedimiento para mostrar ascendente o descendentemente el listado de ciudades segun el comparador que le pasen
+//Procedimiento para mostrar ascendente o descendentemente el listado de ciudades
+// segun el comparador que le pasen
 void mostrarOrdenado( char* file_p, int (*orden)(TEntrada, TEntrada)){
 
 
     TColaCP cola = crear_cola_cp(orden);
+
     TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
+    if(origen==POS_NULA) exit(MEMO_ERR);
 
     leerArchivo(file_p, cola, origen);
 
     int i = 1;
     TEntrada e;
     TCiudad ciudad;
+
+    //Muestra las ciudades segun fueron ordenas en la cola
     while(cp_cantidad(cola)>0){
         e = cp_eliminar(cola);
         printf("%d . ",i);
@@ -208,10 +227,13 @@ void reducirHorasManejo(char* file_p){
     TColaCP cola = crear_cola_cp(ordenarAsc);
 
     TCiudad origen = (TCiudad)malloc(sizeof(struct ciudad));
+    if(origen==POS_NULA) exit(MEMO_ERR);
 
     leerArchivo(file_p, cola, origen);
 
     TColaCP colaNueva = crear_cola_cp(ordenarAsc);
+    if(colaNueva == POS_NULA) exit(MEMO_ERR);
+
     TColaCP aux;
     int cant = (cola->cantidad_elementos);
     TEntrada e;
